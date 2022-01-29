@@ -21,11 +21,13 @@ export function Header() {
       w="100"
       maxWidth={1480}
       h="20"
-      mx="auto"
       mt="4"
+      mx={["auto", "210"]}
       px="6"
       align="center"
+      justify="space-between"
     >  
+    
     {!isWideVersion && (
       <IconButton
       aria-label="Open navigation menu"
