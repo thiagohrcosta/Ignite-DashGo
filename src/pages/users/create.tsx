@@ -10,7 +10,7 @@ export default function CreateUser() {
       <Header />
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <Sidebar />
-        <Box as="form" flex="1" borderRadius={8} bg="gray.800" p="8">
+        <Box as="form" flex="1" borderRadius={8} bg="gray.800" p={["6", "8"]}>
           <Heading size="lg" fontWeight="normal">Criar usuário</Heading>
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8">
