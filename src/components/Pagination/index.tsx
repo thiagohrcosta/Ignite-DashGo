@@ -4,14 +4,14 @@ import { PaginationItem } from "./PaginationItem";
 export function Pagination() {
   return (
     <HStack
-      direction="row"
+      direction={["column", "row"]}
       mt="8"
       justify="space-between"
       align="center"
       spacing="56"
     >
-      <Box>
-        <strong>0</strong> - <strong>10</strong> de <strong>100</strong>
+      <Box display="flex">
+        <strong>0 </strong> - <strong> 10 </strong> de <strong> 100 </strong>
       </Box>
       <Stack direction="row" spacing="2">
         <PaginationItem number={1} isCurrent />
