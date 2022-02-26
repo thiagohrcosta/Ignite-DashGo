@@ -24,10 +24,9 @@ import { Sidebar } from "../../components/Sidebar";
 
 import NextLink from "next/link";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useUsers } from "../../services/hooks/useUsers";
-import { QueryClient } from "react-query";
 import { queryClient } from "../../services/queryClient";
 import { api } from "../../services/api";
 
@@ -46,7 +45,7 @@ export default function UserList() {
   //     .then((data) => console.log(data));
   // }, []);
 
-  async function handlePrefetchUser(userId: number ){
+  async function handlePrefetchUser(userId: string ){
     await queryClient.prefetchQuery(['user', userId], async () => {
       const response = await api.get(`users/${userId}`)
 

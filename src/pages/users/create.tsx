@@ -2,12 +2,18 @@ import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack} from "
 import Link from "next/link";
 import { Input } from "../../components/Form/Input";
 
+import { useMutation } from 'react-query'
+
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from "@hookform/resolvers/yup";
+
+import { api } from "../../services/api";
+import { queryClient } from "../../services/queryClient";
+import { Router, useRouter } from "next/router";
 
 type CreateUserFormData = {
   name: string;
@@ -24,14 +30,30 @@ const createUserFormSchema = yup.object().shape({
 })
 
 export default function CreateUser() {
+  const routes = useRouter();
+
+  const createUser = useMutation(async (user: CreateUserFormData) => {
+    const response = await api.post('users', {
+      user: {
+        ...user,
+        created_at: new Date(),
+      }
+    })
+
+    return response.data.user;
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('users');
+    }
+  });
 
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createUserFormSchema),
   })
 
   const handleCreateUser: SubmitHandler<CreateUserFormData> = async (values) => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    //console.log(values)
+    await createUser.mutateAsync(values);
+    routes.push("/users")
   }
 
   return (
@@ -39,56 +61,64 @@ export default function CreateUser() {
       <Header />
       <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <Sidebar />
-        <Box as="form" flex="1" borderRadius={8} bg="gray.800" p={["6", "8"]} onSubmit={handleSubmit(handleCreateUser)}>
+        <Box
+          as="form"
+          onSubmit={handleSubmit(handleCreateUser)}
+          flex="1"
+          borderRadius={8}
+          bg="gray.800"
+          p={["6", "8"]}
+        >
           <Heading size="lg" fontWeight="normal">Criar usuário</Heading>
           <Divider my="6" borderColor="gray.700" />
           <VStack spacing="8">
-          <SimpleGrid 
-              minChildWidth='240px'
-              spacing={['6', '8']}
-              w='100%'
-            >
-              <Input 
-                name="label" 
-                label="Nome completo" 
+            <SimpleGrid minChildWidth="240px" spacing={["6", "8"]} w="100%">
+              <Input
                 error={formState.errors.name}
-                {...register('Name')}
+                name="name"
+                label="Nome completo"
+                {...register("name")}
               />
-              <Input 
-                name="email" 
-                type="email" 
+              <Input
                 error={formState.errors.email}
-                label="E-mail" 
-                {...register('email')}
+                name="email"
+                type="email"
+                label="E-mail"
+                {...register("email")}
               />
             </SimpleGrid>
-            <SimpleGrid 
-              minChildWidth='240px'
-              spacing={['6', '8']}
-              w='100%'
-            >
-              <Input 
-                name="password" 
-                type="password" 
-                error={formState.errors.passwrord}
-                label="Senha" 
-                {...register('password')} 
+
+            <SimpleGrid minChildWidth="240px" spacing={["6", "8"]} w="100%">
+              <Input
+                name="password"
+                type="password"
+                label="Senha"
+                error={formState.errors.password}
+                {...register("password")}
               />
-              <Input 
-                name="password_confirmation" 
-                type="password" 
+              <Input
+                name="password_confirmation"
+                type="password"
+                label="Confirmação da senha"
                 error={formState.errors.password_confirmation}
-                label="Confirmação da senha" 
-                {...register('password_confirmation')}
+                {...register("password_confirmation")}
               />
             </SimpleGrid>
           </VStack>
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
               <Link href="/users" passHref>
-                <Button colorScheme="whiteAlpha">Cancelar</Button>
+                <Button as="a" colorScheme="whiteAlpha">
+                  Cancelar
+                </Button>
               </Link>
-              <Button colorScheme="pink" isLoading={formState.isSubmitting}>Salvar</Button>
+              <Button
+                type="submit"
+                isLoading={formState.isSubmitting}
+                colorScheme="pink"
+              >
+                Salvar
+              </Button>
             </HStack>
           </Flex>
         </Box>
