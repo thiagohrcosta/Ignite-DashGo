@@ -40,11 +40,13 @@ export default function UserList() {
           day: '2-digit',
           month: 'long',
           year: 'numeric'
-        }),
-      }
-    })
+        })
+      };
+    });
 
     return users;
+  }, {
+    staleTime: 1000 * 5,
   });
 
   const isWideVersion = useBreakpointValue({
