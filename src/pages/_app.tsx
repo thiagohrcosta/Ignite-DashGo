@@ -6,13 +6,12 @@ import { makeServer } from '../services/mirage'
 
 import {ReactQueryDevtools} from 'react-query/devtools'
 
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClientProvider } from 'react-query'
+import { queryClient } from '../services/queryClient'
 
 if (process.env.NODE_ENV === "development") {
   makeServer();
 }
-
-const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps}: AppProps) {
 
